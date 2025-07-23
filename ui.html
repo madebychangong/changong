@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>jerry 텍스트 입력</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f8f8f8;
+      padding: 40px 20px;
+    }
+    form input, form textarea {
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+      margin-top: 4px;
+      box-sizing: border-box;
+    }
+    textarea {
+      resize: vertical;
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+      line-height: 1.5;
+    }
+    form fieldset {
+      margin-top: 20px;
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 10px;
+    }
+    button {
+      background-color: #663275;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #e055b8;
+    }
+    label {
+      display: block;
+      margin-bottom: 10px;
+    }
+    h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .col-half {
+      flex: 1 1 48%;
+    }
+    #resultBox {
+      margin-top: 40px;
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 20px;
+      font-size: 14px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+<div style="max-width:800px; margin:0 auto;">
+  <h2>✍️ 텍스트 입력</h2>
+  <form id="jerryForm">
+    <!-- 단락 입력 -->
+    <label>● 1단락 제목 (20자 이내):
+      <input type="text" name="제목_1단락" maxlength="20">
+    </label>
+
+    <label>● 1단락 설명 (75자 이내):
+      <textarea name="설명_1단락" maxlength="75" rows="2"></textarea>
+    </label>
+
+    <label>● 2단락 제목 (20자 이내):
+      <input type="text" name="제목_2단락" maxlength="20">
+    </label>
+
+    <label>● 2단락 설명 (75자 이내):
+      <textarea name="설명_2단락" maxlength="75" rows="2"></textarea>
+    </label>
+
+    <label>● 3단락 제목 (20자 이내):
+      <input type="text" name="제목_3단락" maxlength="20">
+    </label>
+
+    <label>● 3단락 설명 (75자 이내):
+      <textarea name="설명_3단락" maxlength="75" rows="2"></textarea>
+    </label>
+
+    <!-- 직업별 키워드 -->
+    <fieldset>
+      <legend>직업별 키워드 입력 (각 9자 이내)</legend>
+      <div class="row">
+        <div class="col-half">
+          <label>원소:
+            <input type="text" name="키워드_원소" maxlength="9">
+          </label>
+          <label>강령:
+            <input type="text" name="키워드_강령" maxlength="9">
+          </label>
+          <label>드루:
+            <input type="text" name="키워드_드루" maxlength="9">
+          </label>
+        </div>
+        <div class="col-half">
+          <label>도적:
+            <input type="text" name="키워드_도적" maxlength="9">
+          </label>
+          <label>혼령:
+            <input type="text" name="키워드_혼령" maxlength="9">
+          </label>
+          <label>야만:
+            <input type="text" name="키워드_야만" maxlength="9">
+          </label>
+        </div>
+      </div>
+    </fieldset>
+    <label>● 명망작 마무리 문구 (20자 이내):
+      <input type="text" name="마무리_명망작문구" maxlength="20">
+    </label>
+    <!-- 오픈카톡 / 배틀태그 -->
+    <fieldset>
+      <legend>오픈카톡 & 배틀태그</legend>
+      <label>오픈카톡 링크:
+        <input type="url" name="오픈카톡링크" placeholder="https://open.kakao.com/o/...">
+      </label>
+      <label>배틀태그 (예: 제리#32881):
+        <input type="text" name="배틀태그" maxlength="30">
+      </label>
+    </fieldset>
+
+
+
+    <br>
+    <button type="submit">✅ 홍보물 생성</button>
+  </form>
+
+  <!-- 결과 HTML 출력 -->
+  <div id="resultBox" style="margin-top:20px;">
+    <h3>📋 생성된 HTML 결과 (복사해서 사용하세요)</h3><br>실제 홍보물 반영까지 3~5분 정도 소요됩니다.
+    <textarea id="resultHTML" rows="10" readonly style="width:100%; font-family:monospace;"></textarea>
+  </div>
+</div>
+
+<script>
+  document.getElementById('jerryForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    const data = {};
+    for (const [key, value] of formData.entries()) {
+      data[key] = value;
+    }
+
+    const html = `
+<a href="${data['오픈카톡링크']}" target="_blank" rel="noopener noreferrer">
+  <img src="jerry0.png" alt="오픈카톡 연결" style="cursor:pointer; max-width:100%; height:auto; border-radius:12px; display:block; margin:0 auto 0px auto;">
+</a>
+
+<a href="${data['오픈카톡링크']}" target="_blank" rel="noopener noreferrer">
+  <img src="jerry1.png" alt="오픈카톡 연결" style="cursor:pointer; max-width:100%; height:auto; border-radius:12px; display:block; margin:0 auto 40px auto;">
+</a>
+
+<p style="color:#663275; font-weight:700; font-size:28px; text-align:center; max-width:720px; margin:0 auto 40px auto; user-select:text; cursor:default; letter-spacing:0.05em; line-height:1.4;">
+  ♥이미지 Click 시 1 : 1 문의로 이동♥<br>배틀태그: ${data['배틀태그']}
+</p>`;
+
+    document.getElementById('resultHTML').value = html.trim();
+  });
+</script>
+
+</body>
+</html>
