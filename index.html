@@ -156,27 +156,17 @@
     e.preventDefault();
 
     const formData = new FormData(this);
-    const data = {};
+    const params = new URLSearchParams();
+
     for (const [key, value] of formData.entries()) {
-      data[key] = value;
+      params.append(key, value);
     }
 
-    const html = `
-<a href="${data['오픈카톡링크']}" target="_blank" rel="noopener noreferrer">
-  <img src="jerry0.png" alt="오픈카톡 연결" style="cursor:pointer; max-width:100%; height:auto; border-radius:12px; display:block; margin:0 auto 0px auto;">
-</a>
-
-<a href="${data['오픈카톡링크']}" target="_blank" rel="noopener noreferrer">
-  <img src="jerry1.png" alt="오픈카톡 연결" style="cursor:pointer; max-width:100%; height:auto; border-radius:12px; display:block; margin:0 auto 40px auto;">
-</a>
-
-<p style="color:#663275; font-weight:700; font-size:28px; text-align:center; max-width:720px; margin:0 auto 40px auto; user-select:text; cursor:default; letter-spacing:0.05em; line-height:1.4;">
-  ♥이미지 Click 시 1 : 1 문의로 이동♥<br>배틀태그: ${data['배틀태그']}
-</p>`;
-
-    document.getElementById('resultHTML').value = html.trim();
+    // 입력값을 jerryempty.html로 전달
+    window.location.href = `jerryempty.html?${params.toString()}`;
   });
 </script>
+
 
 </body>
 </html>
