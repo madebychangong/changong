@@ -86,30 +86,16 @@
   </div>
 </a>
 <script>
-  // URL 쿼리 파라미터를 객체로 파싱하는 함수
-  function getParams() {
-    const params = {};
-    const search = new URLSearchParams(window.location.search);
-    for (const [key, value] of search.entries()) {
-      params[key] = decodeURIComponent(value);
-    }
-    return params;
-  }
+  window.addEventListener('DOMContentLoaded', function () {
+    const params = new URLSearchParams(window.location.search);
+    let html = document.body.innerHTML;
 
-  // 쿼리값을 {{}} 안의 템플릿에 채워넣기
-  function fillTemplate() {
-    const params = getParams();
-    const html = document.body.innerHTML;
-    let filled = html;
-
-    for (const key in params) {
+    for (const [key, value] of params.entries()) {
       const pattern = new RegExp(`{{${key}}}`, 'g');
-      filled = filled.replace(pattern, params[key]);
+      html = html.replace(pattern, decodeURIComponent(value));
     }
 
-    document.body.innerHTML = filled;
-  }
-
-  // 실행
-  fillTemplate();
+    document.body.innerHTML = html;
+  });
 </script>
+
