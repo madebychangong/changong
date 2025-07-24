@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <script src="https://unpkg.com/html-to-image"></script>
   <meta charset="UTF-8" />
   <title>theblack 텍스트 입력</title>
+  <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.min.js"></script>
   <style>
     body {
-      display: none;
       font-family: 'Arial', sans-serif;
       background-color: #121212;
       color: #fff;
@@ -58,7 +57,6 @@
     }
 
     #resultBox {
-      display: none;
       margin-top: 40px;
       background: #1d1d1d;
       padding: 20px;
@@ -83,6 +81,13 @@
       border-radius: 6px;
       resize: none;
     }
+
+    iframe {
+      display: none;
+      width: 0;
+      height: 0;
+      border: 0;
+    }
   </style>
 </head>
 <body>
@@ -94,81 +99,50 @@
       <button type="submit">✅ 텍스트 적용하기</button>
     </form>
 
-    <div id="resultBox">
+    <div id="resultBox" style="display:none">
       <h3>👇 아래 코드를 그대로 복붙하시면 됩니다</h3>
       <textarea id="resultCode" readonly></textarea>
     </div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+  <iframe id="hiddenFrame"></iframe>
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const firebaseConfig = {
-        apiKey: "AIzaSyCi-kZy2DHYib0saB39_7fKEIQ-8r2grjI",
-        authDomain: "changong-id.firebaseapp.com",
-        projectId: "changong-id",
-        storageBucket: "changong-id.appspot.com",
-        messagingSenderId: "538131345883",
-        appId: "1:538131345883:web:84d40425ccb3fba6cff7fe"
-      };
+  <script>
+    document.getElementById("theblackForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
 
-      const allowedUsers = {
-        theblack: ['theblack@d4.com'],
-        jerry: ['jerry@d4.com'],
-        aron: ['aron@d4.com'],
-        master: ['master@cg.com']
-      };
+      const mainText = document.getElementById("mainText").value;
+      const frame = document.getElementById("hiddenFrame");
+      const params = new URLSearchParams({ mainText });
 
-      const app = initializeApp(firebaseConfig);
-      const auth = getAuth(app);
+      frame.src = `https://jade-cactus-d3ec99.netlify.app/theblackempty.html?${params.toString()}`;
 
-      onAuthStateChanged(auth, (user) => {
-        if (!user) {
-          setTimeout(() => {
-            alert("로그인이 필요한 페이지입니다.");
-            window.location.href = "index.html";
-          }, 100);
+      frame.onload = async () => {
+        const renderTarget = frame.contentWindow.document.querySelector(".render-target");
+
+        if (!renderTarget) {
+          alert("렌더링 대상 요소를 찾을 수 없습니다.");
           return;
         }
 
-        const pathname = window.location.pathname.toLowerCase();
-        let currentKey = null;
+        try {
+          const dataUrl = await htmlToImage.toPng(renderTarget);
 
-        if (pathname.includes("jerry")) currentKey = "jerry";
-        else if (pathname.includes("theblack")) currentKey = "theblack";
-        else if (pathname.includes("aron")) currentKey = "aron";
+          // 업로드 URL은 추후 Supabase 연동으로 대체 가능
+          // 현재는 미리보기용 임시 코드
+          const dummyUploadURL = dataUrl; // 실제 사용 시 이미지 업로드 로직 필요
 
-        const allowed = allowedUsers[currentKey] || [];
+          const htmlCode = `<a href="https://open.kakao.com/o/gUVp9cwh" target="_blank">
+  <img src="${dummyUploadURL}" alt="가격표" style="width:100%; max-width:720px;">
+</a>`;
 
-        if (!allowed.includes(user.email)) {
-          setTimeout(() => {
-            alert("접근 권한이 없습니다.");
-            signOut(auth);
-            window.location.href = "index.html";
-          }, 100);
-          return;
+          document.getElementById("resultCode").value = htmlCode;
+          document.getElementById("resultBox").style.display = "block";
+        } catch (err) {
+          console.error("이미지 변환 실패:", err);
+          alert("이미지 생성 중 오류가 발생했습니다.");
         }
-
-        document.body.style.display = 'block';
-      });
-
-      document.getElementById("theblackForm").addEventListener("submit", function(e) {
-        e.preventDefault();
-        const mainText = document.getElementById("mainText").value;
-        const params = new URLSearchParams({ mainText });
-
-        const renderURL = `https://madebychangong.github.io/changong/theblackempty.html?${params.toString()}`;
-
-        // 이미지 URL은 Puppeteer 캡처된 결과로 교체 필요
-        const imageURL = "https://madebychangong.github.io/changong/img/theblack_render.png";
-
-        const finalHTML = `<a href="https://open.kakao.com/o/gUVp9cwh" target="_blank">\n  <img src="${imageURL}" alt="가격표" style="width:100%; max-width:720px;">\n</a>`;
-
-        document.getElementById("resultCode").value = finalHTML;
-        document.getElementById("resultBox").style.display = "block";
-      });
+      };
     });
   </script>
 </body>
