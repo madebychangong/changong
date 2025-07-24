@@ -190,6 +190,30 @@
     }
   });
 </script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCi-kZy2DHYib0saB39_7fKEIQ-8r2grjI",
+    authDomain: "changong-id.firebaseapp.com",
+    projectId: "changong-id",
+    storageBucket: "changong-id.appspot.com",
+    messagingSenderId: "538131345883",
+    appId: "1:538131345883:web:84d40425ccb3fba6cff7fe"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // 로그인 상태 확인 → 아니면 index로 리디렉션
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      alert("로그인이 필요한 페이지입니다.");
+      window.location.href = "index.html";
+    }
+  });
+</script>
 
 </body>
 </html>
