@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-  <style>
-  body {
-    display: none;
-  }
-</style>
+  <head>
   <meta charset="UTF-8">
   <title>jerry 텍스트 입력</title>
+  <style>
+    body {
+      display: none;
+    }
+  </style>
   <style>
     body {
       font-family: 'Arial', sans-serif;
@@ -190,11 +190,12 @@
 
   onAuthStateChanged(auth, (user) => {
     if (!user) {
-      alert("로그인이 필요한 페이지입니다.");
       window.location.href = "index.html";
+    } else {
+      document.body.style.display = 'block';
     }
   });
 </script>
- 
+
 </body>
 </html>
