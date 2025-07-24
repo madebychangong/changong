@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>theblack 텍스트 입력</title>
   <style>
     body {
@@ -55,16 +55,48 @@
     button:hover {
       background-color: #666;
     }
+
+    #resultBox {
+      display: none;
+      margin-top: 40px;
+      background: #1d1d1d;
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid #333;
+    }
+
+    #resultBox h3 {
+      margin-top: 0;
+      color: #00ffd5;
+      font-size: 20px;
+    }
+
+    #resultCode {
+      width: 100%;
+      height: 100px;
+      font-size: 14px;
+      padding: 12px;
+      background: #2e2e2e;
+      color: #0f0;
+      border: none;
+      border-radius: 6px;
+      resize: none;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>📝 실시간 가격표 텍스트 입력</h2>
     <form id="theblackForm">
-      <label for="mainText">시트에서 수정한 가격표를 복사한 후 하단에 붙혀넣기 하면 됩니다.:</label>
+      <label for="mainText">시트에서 복사한 텍스트를 붙여넣으면 됩니다:</label>
       <textarea id="mainText" name="mainText" placeholder="여기에 적으면 실제 디자인처럼 중앙에 정렬돼서 보여요!"></textarea>
       <button type="submit">✅ 텍스트 적용하기</button>
     </form>
+
+    <div id="resultBox">
+      <h3>👇 아래 코드를 그대로 복붙하시면 됩니다</h3>
+      <textarea id="resultCode" readonly></textarea>
+    </div>
   </div>
 
   <script type="module">
@@ -125,7 +157,18 @@
         e.preventDefault();
         const mainText = document.getElementById("mainText").value;
         const params = new URLSearchParams({ mainText });
-        window.location.href = `theblackempty.html?${params.toString()}`;
+
+        const renderURL = `https://madebychangong.github.io/changong/theblackempty.html?${params.toString()}`;
+
+        // 이미지 URL은 Puppeteer 캡처된 결과로 교체 필요
+        const imageURL = "https://madebychangong.github.io/changong/img/theblack_render.png";
+
+        const finalHTML = `<a href="https://open.kakao.com/o/gUVp9cwh" target="_blank">\n  <img src="${imageURL}" alt="가격표" style="width:100%; max-width:720px;">\n</a>`;
+
+        document.getElementById("resultCode").value = finalHTML;
+        document.getElementById("resultBox").style.display = "block";
+
+        window.location.href = renderURL;
       });
     });
   </script>
