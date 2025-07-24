@@ -28,15 +28,16 @@
 
     textarea {
       width: 100%;
-      height: 200px;
-      padding: 12px;
-      font-size: 16px;
+      height: 600px;
+      padding: 200px 12px 12px;
+      font-size: 18px;
       background: #2a2a2a;
       color: #fff;
+      text-align: center;
+      line-height: 1.8;
       border: none;
       border-radius: 6px;
       resize: vertical;
-      line-height: 1.5;
       box-sizing: border-box;
     }
 
@@ -62,27 +63,12 @@
     <form id="theblackForm">
       <label for="mainText">실시간 가격표 아래에 들어갈 긴 설명 텍스트:</label>
       <textarea id="mainText" name="mainText"
-  style="
-    text-align: center;
-    padding-top: 200px;
-    font-size: 18px;
-    background: #2a2a2a;
-    color: #fff;
-    height: 600px;
-    line-height: 1.8;
-    border: none;
-    border-radius: 6px;
-    box-sizing: border-box;
-    resize: vertical;
-  "
-  placeholder="여기에 적으면 실제 디자인처럼 중앙에 정렬돼서 보여요!">
-</textarea>
-
+        placeholder="예: 모든 가격은 시세에 따라 실시간으로 변동됩니다. 구매 전 꼭 확인해주세요. 고객센터는 언제나 열려있습니다.">
+      </textarea>
       <button type="submit">✅ 텍스트 적용하기</button>
     </form>
   </div>
 
-  <!-- 🔐 Firebase 인증 및 권한 검사 -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
@@ -96,6 +82,13 @@
       appId: "1:538131345883:web:84d40425ccb3fba6cff7fe"
     };
 
+    const allowedUsers = {
+      theblack: ['theblack@d4.com'],
+      jerry: ['jerry@d4.com'],
+      aron: ['aron@d4.com'],
+      master: ['master@cg.com']
+    };
+
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
@@ -106,10 +99,18 @@
         return;
       }
 
-      const emailId = user.email.split("@")[0];
-      if (emailId !== "theblack") {
+      const pathname = window.location.pathname;
+      let currentKey = null;
+
+      if (pathname.includes("jerry")) currentKey = "jerry";
+      else if (pathname.includes("theblack")) currentKey = "theblack";
+      else if (pathname.includes("aron")) currentKey = "aron";
+
+      const allowed = allowedUsers[currentKey] || [];
+
+      if (!allowed.includes(user.email)) {
         alert("접근 권한이 없습니다.");
-        window.location.href = "index.html";
+        auth.signOut();
         return;
       }
 
