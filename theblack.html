@@ -54,31 +54,10 @@
     button:hover {
       background-color: #666;
     }
-
-    #authWarning {
-      display: none;
-      text-align: center;
-      margin-top: 150px;
-      font-size: 20px;
-      color: #ff5252;
-    }
-
-    #authWarning a {
-      color: #ffa500;
-      text-decoration: underline;
-    }
   </style>
 </head>
 <body>
-
-  <!-- 로그인 필요 시 노출 -->
-  <div id="authWarning">
-    🚫 로그인이 필요한 페이지입니다.<br><br>
-    <a href="index.html">👉 로그인 페이지로 이동</a>
-  </div>
-
-  <!-- 로그인 성공 시 노출 -->
-  <div class="container" id="mainContent" style="display: none;">
+  <div class="container">
     <h2>📝 하단 설명 텍스트 입력</h2>
     <form id="theblackForm">
       <label for="mainText">실시간 가격표 아래에 들어갈 긴 설명 텍스트:</label>
@@ -104,11 +83,10 @@
     const auth = getAuth(app);
 
     onAuthStateChanged(auth, (user) => {
-      if (user) {
-        document.getElementById('mainContent').style.display = 'block';
-        document.body.style.display = 'block';
+      if (!user) {
+        alert("로그인이 필요한 페이지입니다.");
+        window.location.href = "index.html";
       } else {
-        document.getElementById('authWarning').style.display = 'block';
         document.body.style.display = 'block';
       }
     });
