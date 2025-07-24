@@ -189,13 +189,15 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        document.body.style.display = 'block'; // 로그인된 사용자만 보여줌
-      } else {
-        window.location.href = "index.html"; // 로그인 안되어 있으면 로그인 페이지로
-      }
-    });
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    document.body.style.display = 'block';
+  } else {
+    alert("로그인이 필요한 페이지입니다.");
+    window.location.href = "index.html";
+  }
+});
+
   });
 </script>
 
