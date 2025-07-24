@@ -93,28 +93,35 @@
     const auth = getAuth(app);
 
     onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        alert("로그인이 필요한 페이지입니다.");
-        window.location.href = "index.html";
-        return;
-      }
+  if (!user) {
+    setTimeout(() => {
+      alert("로그인이 필요한 페이지입니다.");
+      window.location.href = "index.html";
+    }, 100);  // 딜레이를 주면 alert가 확실히 뜸
+    return;
+  }
 
-      const pathname = window.location.pathname;
-      let currentKey = null;
+  const pathname = window.location.pathname;
+  let currentKey = null;
 
-      if (pathname.includes("jerry")) currentKey = "jerry";
-      else if (pathname.includes("theblack")) currentKey = "theblack";
-      else if (pathname.includes("aron")) currentKey = "aron";
+  if (pathname.includes("jerry")) currentKey = "jerry";
+  else if (pathname.includes("theblack")) currentKey = "theblack";
+  else if (pathname.includes("aron")) currentKey = "aron";
 
-      const allowed = allowedUsers[currentKey] || [];
+  const allowed = allowedUsers[currentKey] || [];
 
-      if (!allowed.includes(user.email)) {
-        alert("접근 권한이 없습니다.");
-        auth.signOut();
-        return;
-      }
+  if (!allowed.includes(user.email)) {
+    setTimeout(() => {
+      alert("접근 권한이 없습니다.");
+      auth.signOut();
+      window.location.href = "index.html";
+    }, 100);
+    return;
+  }
 
-      document.body.style.display = 'block';
+  document.body.style.display = 'block';
+});
+
     });
 
     document.getElementById("theblackForm").addEventListener("submit", function(e) {
