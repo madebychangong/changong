@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>theblack 결과</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #121212;
+      color: #fff;
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+
+    .content {
+      max-width: 800px;
+      padding: 60px 30px;
+      font-size: 18px;
+      line-height: 1.8;
+      white-space: pre-line;
+      background: #1e1e1e;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255,255,255,0.05);
+    }
+  </style>
+</head>
+<body>
+  <div class="content" id="displayText"></div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const text = params.get("mainText") || "표시할 텍스트가 없습니다.";
+    document.getElementById("displayText").textContent = text;
+  </script>
+</body>
+</html>
