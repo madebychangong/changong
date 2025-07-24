@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Changong 입력자 로그인</title>
+</head>
+<body>
+  <h2>🔐 입력자 로그인</h2>
+  <form id="loginForm">
+    <input type="email" id="email" placeholder="이메일" required />
+    <input type="password" id="password" placeholder="비밀번호" required />
+    <button type="submit">로그인</button>
+  </form>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    // ✅ 최종 Firebase 설정값
+    const firebaseConfig = {
+      apiKey: "AlzaSyCi-kzy2DHYiObsaB39_7fKEIQ-8r2grjI",
+      authDomain: "changong-id.firebaseapp.com",
+      projectId: "changong-id",
+      storageBucket: "changong-id.appspot.com",
+      messagingSenderId: "538131345883",
+      appId: "1:538131345883:web:8ca0681092648b15cff7fe"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // 로그인된 상태면 자동으로 jerry.html 이동
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        window.location.href = "jerry.html";
+      }
+    });
+
+    // 로그인 시도
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        window.location.href = "jerry.html";
+      } catch (error) {
+        alert("로그인 실패: " + error.message);
+      }
+    });
+  </script>
+</body>
+</html>
