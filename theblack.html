@@ -66,6 +66,7 @@
     </form>
   </div>
 
+  <!-- 🔐 Firebase 인증 및 권한 검사 -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
@@ -86,9 +87,17 @@
       if (!user) {
         alert("로그인이 필요한 페이지입니다.");
         window.location.href = "index.html";
-      } else {
-        document.body.style.display = 'block';
+        return;
       }
+
+      const emailId = user.email.split("@")[0];
+      if (emailId !== "theblack") {
+        alert("접근 권한이 없습니다.");
+        window.location.href = "index.html";
+        return;
+      }
+
+      document.body.style.display = 'block';
     });
 
     document.getElementById("theblackForm").addEventListener("submit", function(e) {
