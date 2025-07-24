@@ -3,147 +3,35 @@
 <head>
   <meta charset="UTF-8" />
   <title>theblack 텍스트 입력</title>
-  <script src="https://unpkg.com/html-to-image"></script>
+  <script src="https://unpkg.com/html-to-image@1.11.11/dist/html-to-image.min.js"></script>
+  <!-- Supabase JS CDN 추가 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      background-color: #121212;
-      color: #fff;
-      padding: 40px 20px;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      background: #1e1e1e;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(255,255,255,0.1);
-    }
-
-    textarea {
-      width: 100%;
-      height: 600px;
-      padding: 100px 12px 12px 12px;
-      font-size: 18px;
-      background: #2a2a2a;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      resize: vertical;
-      line-height: 1.8;
-      box-sizing: border-box;
-      text-align: center;
-    }
-
-    button {
-      margin-top: 20px;
-      background-color: #444;
-      color: #fff;
-      border: none;
-      padding: 12px 20px;
-      font-size: 16px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    button:disabled {
-      background-color: #888;
-      cursor: not-allowed;
-    }
-
-    #resultBox {
-      display: none;
-      margin-top: 40px;
-      background: #1d1d1d;
-      padding: 20px;
-      border-radius: 10px;
-      border: 1px solid #333;
-    }
-
-    #resultCode {
-      width: 100%;
-      height: 100px;
-      font-size: 14px;
-      padding: 12px;
-      background: #2e2e2e;
-      color: #0f0;
-      border: none;
-      border-radius: 6px;
-      resize: none;
-    }
-
-    #message {
-      margin-top: 20px;
-      color: #00ffd5;
-      font-size: 16px;
-      text-align: center;
-    }
+    /* (중략, 네가 준 스타일 그대로) */
+    iframe { display: none; } /* 숨김 */
   </style>
 </head>
 <body>
   <div class="container">
     <h2>📝 실시간 가격표 텍스트 입력</h2>
     <form id="theblackForm">
-      <textarea id="mainText" name="mainText" placeholder="여기에 적으면 실제 디자인처럼 중앙에 정렬돼서 보여요!"></textarea>
+      <textarea id="mainText" name="mainText"></textarea>
       <button id="submitBtn" type="submit">✅ 텍스트 적용하기</button>
     </form>
-
     <div id="message"></div>
-
-    <div id="resultBox">
+    <div id="resultBox" style="display:none;">
       <h3>👇 아래 코드를 그대로 복붙하시면 됩니다</h3>
       <textarea id="resultCode" readonly></textarea>
     </div>
+    <iframe id="hiddenFrame" src="" width="1" height="1"></iframe>
   </div>
+  <script>
+    // Supabase 정보 (네 프로젝트에 맞게 입력)
+    const supabaseUrl = "https://ssnmitgehgzzcpmqwhzt.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNzbm1pdGdlaGd6emNwbXF3aHp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMzNjI1MDgsImV4cCI6MjA2ODkzODUwOH0.u3FrSDh5qYeccQmn0PkOs4nfqIhXLSFHhpWj2JXhTrA";
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyCi-kZy2DHYib0saB39_7fKEIQ-8r2grjI",
-      authDomain: "changong-id.firebaseapp.com",
-      projectId: "changong-id",
-      storageBucket: "changong-id.appspot.com",
-      messagingSenderId: "538131345883",
-      appId: "1:538131345883:web:84d40425ccb3fba6cff7fe"
-    };
-
-    const allowedUsers = {
-      theblack: ['theblack@d4.com'],
-      jerry: ['jerry@d4.com'],
-      aron: ['aron@d4.com'],
-      master: ['master@cg.com']
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        alert("로그인이 필요한 페이지입니다.");
-        window.location.href = "index.html";
-        return;
-      }
-
-      const pathname = window.location.pathname.toLowerCase();
-      let currentKey = null;
-      if (pathname.includes("jerry")) currentKey = "jerry";
-      else if (pathname.includes("theblack")) currentKey = "theblack";
-      else if (pathname.includes("aron")) currentKey = "aron";
-
-      const allowed = allowedUsers[currentKey] || [];
-
-      if (!allowed.includes(user.email)) {
-        alert("접근 권한이 없습니다.");
-        signOut(auth);
-        window.location.href = "index.html";
-        return;
-      }
-    });
-
-    document.getElementById("theblackForm").addEventListener("submit", function(e) {
+    document.getElementById("theblackForm").addEventListener("submit", async function(e) {
       e.preventDefault();
       const submitBtn = document.getElementById("submitBtn");
       const messageDiv = document.getElementById("message");
@@ -151,21 +39,55 @@
       const mainText = document.getElementById("mainText").value;
       const params = new URLSearchParams({ mainText });
 
-      // 안내 메시지
+      // 1. iframe에 디자인 페이지 띄우기
+      const iframe = document.getElementById("hiddenFrame");
+      iframe.src = `/changong/theblackempty.html?${params.toString()}`;
+
+      // 2. 안내문 띄우기
       submitBtn.disabled = true;
-      messageDiv.innerText = "이미지를 생성 중입니다. 최대 30초 정도 소요될 수 있습니다...";
+      messageDiv.innerText = "이미지를 생성하고 있습니다. 잠시만 기다려주세요...";
 
-      // 25초 후 실행
-      setTimeout(() => {
-        // 이미지 URL 자동 생성 후 업데이트
-        const imageURL = "https://madebychangong.github.io/changong/img/theblack_render.png"; // 업로드 후 링크로 갱신될 예정
-        const finalHTML = `<a href="https://open.kakao.com/o/gUVp9cwh" target="_blank">\n  <img src="${imageURL}" alt="가격표" style="width:100%; max-width:720px;">\n</a>`;
+      // 3. iframe 로드 후 캡쳐 진행 (2초 대기)
+      iframe.onload = async function() {
+        setTimeout(async () => {
+          try {
+            // iframe 내 .render-target 선택
+            const node = iframe.contentWindow.document.querySelector('.render-target');
+            // 캡쳐
+            const dataUrl = await window.htmlToImage.toPng(node);
 
-        document.getElementById("resultCode").value = finalHTML;
-        resultBox.style.display = "block";
-        messageDiv.innerText = "✅ 이미지 생성이 완료되었습니다!";
-        submitBtn.disabled = false;
-      }, 25000); // 25초 후 실행
+            // 4. Supabase Storage에 업로드
+            // 고유 파일명 만들기 (타임스탬프 등)
+            const fileName = `theblack_${Date.now()}.png`;
+            const fileData = await (await fetch(dataUrl)).blob();
+            const { data, error } = await supabase
+              .storage
+              .from('changong-images')
+              .upload(fileName, fileData, { cacheControl: '3600', upsert: false });
+
+            if (error) {
+              messageDiv.innerText = "이미지 업로드 실패: " + error.message;
+              submitBtn.disabled = false;
+              return;
+            }
+
+            // 5. Public URL 생성
+            const publicUrl = `${supabaseUrl}/storage/v1/object/public/changong-images/${fileName}`;
+
+            // 6. 결과 HTML 생성 및 표시
+            const finalHTML = `<a href="https://open.kakao.com/o/gUVp9cwh" target="_blank">
+  <img src="${publicUrl}" alt="가격표" style="width:100%; max-width:720px;">
+</a>`;
+            document.getElementById("resultCode").value = finalHTML;
+            resultBox.style.display = "block";
+            messageDiv.innerText = "✅ 이미지 생성이 완료되었습니다!";
+            submitBtn.disabled = false;
+          } catch (err) {
+            messageDiv.innerText = "캡쳐/업로드 오류: " + err.message;
+            submitBtn.disabled = false;
+          }
+        }, 2000);
+      };
     });
   </script>
 </body>
