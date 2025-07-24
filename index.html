@@ -67,40 +67,60 @@
     </form>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-analytics.js";
-    import {
-      getAuth,
-      signInWithEmailAndPassword
-    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+ <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-analytics.js";
+  import {
+    getAuth,
+    signInWithEmailAndPassword
+  } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCi-kZy2DHYib0saB39_7fKEIQ-8r2grjI",
-      authDomain: "changong-id.firebaseapp.com",
-      projectId: "changong-id",
-      storageBucket: "changong-id.appspot.com",
-      messagingSenderId: "538131345883",
-      appId: "1:538131345883:web:84d40425ccb3fba6cff7fe",
-      measurementId: "G-JDN58VV81G"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyCi-kZy2DHYib0saB39_7fKEIQ-8r2grjI",
+    authDomain: "changong-id.firebaseapp.com",
+    projectId: "changong-id",
+    storageBucket: "changong-id.appspot.com",
+    messagingSenderId: "538131345883",
+    appId: "1:538131345883:web:84d40425ccb3fba6cff7fe",
+    measurementId: "G-JDN58VV81G"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-    const auth = getAuth(app);
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const auth = getAuth(app);
 
-    document.getElementById("loginForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+  // 사용자 이메일 앞부분 기준으로 매핑 (id → html파일)
+  const idToPageMap = {
+    jerry: "jerry.html",
+    aron: "aron.html",
+    sally: "sally.html",
+    chloe: "chloe.html",
+    tom: "tom.html",
+    // 💡 여기에 계속 추가하면 돼
+  };
 
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-        window.location.href = "jerry.html";
-      } catch (error) {
-        alert("로그인 실패: " + error.message);
+  document.getElementById("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("email").value.trim().toLowerCase();
+    const password = document.getElementById("password").value;
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+
+      const id = email.split("@")[0]; // 아이디 추출 (예: jerry)
+      const targetPage = idToPageMap[id];
+
+      if (targetPage) {
+        window.location.href = targetPage;
+      } else {
+        alert("접근 권한이 없는 계정입니다.");
       }
-    });
-  </script>
+
+    } catch (error) {
+      alert("로그인 실패: " + error.message);
+    }
+  });
+</script>
+
 </body>
 </html>
