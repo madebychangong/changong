@@ -2,40 +2,81 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>theblack 결과</title>
+  <title>theblack 템플릿</title>
   <style>
     body {
       margin: 0;
       padding: 0;
-      background-color: #121212;
-      color: #fff;
-      font-family: 'Arial', sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
+      background: #fff;
+      font-family: 'Pretendard', sans-serif;
+    }
+
+    .render-target {
+      width: 800px;
+      margin: 40px auto;
+      border: 1px solid #ddd;
+      padding: 60px 40px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.08);
+      background: white;
+      box-sizing: border-box;
       text-align: center;
     }
 
-    .content {
-      max-width: 800px;
-      padding: 60px 30px;
+    .render-target h1 {
+      font-size: 28px;
+      margin-bottom: 30px;
+    }
+
+    .render-target .price-box {
+      font-size: 36px;
+      font-weight: bold;
+      color: #222;
+      margin-bottom: 40px;
+    }
+
+    .render-target .description {
       font-size: 18px;
-      line-height: 1.8;
-      white-space: pre-line;
-      background: #1e1e1e;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(255,255,255,0.05);
+      color: #444;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-break: keep-all;
+      margin-top: 40px;
     }
   </style>
 </head>
 <body>
-  <div class="content" id="displayText"></div>
+  <div class="render-target">
+
+    <!-- 안내 텍스트 및 링크 -->
+    <div style="text-align: center; font-size: 17px; color: #ccc; margin-bottom: 16px; line-height: 1.6;">
+      <div style="margin-bottom: 12px;">
+        <p style="margin: 4px 0;">📦 <strong>모든 아이템 · 장비 · 재료 판매</strong></p>
+        <p style="margin: 4px 0;">🛡️ <strong>버스 · 대리 · 세팅 전부 지원</strong></p>
+        <p style="margin: 4px 0;">🧙‍♂️ <strong>전문 세팅 기사 상시 대기</strong></p>
+        <p style="margin: 4px 0;">🔥 <strong>실시간 최저가</strong>로 모십니다</p>
+      </div>
+
+      <a href="https://open.kakao.com/o/gUVp9cwh" target="_blank"
+         style="display: inline-block; background-color: #00ffd5; color: #000; padding: 8px 16px; border-radius: 20px; text-decoration: none; font-weight: bold; transition: background-color 0.3s;">
+        👉 오픈채팅 바로가기
+      </a>
+    </div>
+
+    <hr style="border: none; border-top: 1px solid #333; margin: 20px 0;">
+
+    <div style="text-align: center;">
+      <h2 style="color: #00ffae; font-size: 24px; margin: 0;">💰 실시간 가격표</h2>
+    </div>
+
+    <!-- 🔽 여기에 텍스트 반영됨 -->
+    <div id="mainText" class="description"></div>
+
+  </div>
 
   <script>
     const params = new URLSearchParams(window.location.search);
-    const text = params.get("mainText") || "표시할 텍스트가 없습니다.";
-    document.getElementById("displayText").textContent = text;
+    const text = params.get("mainText") || "";
+    document.getElementById("mainText").innerText = text;
   </script>
 </body>
 </html>
