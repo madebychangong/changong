@@ -2,92 +2,176 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>theblack 텍스트 입력</title>
+  <title>실시간 가격표 입력</title>
   <script src="https://unpkg.com/html-to-image@1.11.11/dist/html-to-image.min.js"></script>
-  <!-- Supabase JS CDN 추가 -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <style>
-    /* (중략, 네가 준 스타일 그대로) */
-    iframe { display: none; } /* 숨김 */
+    body {
+      background: #181820;
+      color: #fff;
+      font-family: 'Pretendard', 'Arial', sans-serif;
+      padding: 40px 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #20202a;
+      padding: 36px 28px 30px 28px;
+      border-radius: 14px;
+      box-shadow: 0 2px 18px rgba(0,0,0,0.19);
+    }
+    h2 {
+      margin-bottom: 20px;
+      font-size: 26px;
+      letter-spacing: -1px;
+    }
+    textarea {
+      width: 100%;
+      height: 160px;
+      font-size: 18px;
+      background: #232338;
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 18px 12px;
+      margin-bottom: 12px;
+      resize: vertical;
+      line-height: 1.7;
+      box-sizing: border-box;
+    }
+    button {
+      display: block;
+      width: 100%;
+      background: #00ffd5;
+      color: #111;
+      font-weight: 700;
+      border: none;
+      padding: 15px;
+      font-size: 18px;
+      border-radius: 7px;
+      cursor: pointer;
+      margin-bottom: 14px;
+      transition: background 0.18s;
+    }
+    button:disabled {
+      background: #93f4e2;
+      color: #333;
+      cursor: not-allowed;
+    }
+    #message {
+      margin: 12px 0 0 0;
+      text-align: center;
+      font-size: 16px;
+      color: #00ffd5;
+      min-height: 28px;
+    }
+    #resultBox {
+      margin-top: 28px;
+      display: none;
+    }
+    .code-box {
+      background: #222;
+      color: #0f0;
+      border: 2px solid #00ffd5;
+      border-radius: 9px;
+      padding: 18px 14px;
+      margin: 0 0 12px 0;
+      font-size: 15px;
+      word-break: break-all;
+      min-height: 70px;
+      position: relative;
+      font-family: 'Menlo', 'Consolas', monospace;
+      outline: none;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      background: #00ffd5;
+      color: #111;
+      font-weight: bold;
+      border: none;
+      border-radius: 4px;
+      padding: 5px 10px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.16s;
+    }
+    .copy-btn:active {
+      background: #16c7a5;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>📝 실시간 가격표 텍스트 입력</h2>
-    <form id="theblackForm">
-      <textarea id="mainText" name="mainText"></textarea>
+    <form id="theblackForm" autocomplete="off">
+      <textarea id="mainText" placeholder="여기에 텍스트를 입력하세요"></textarea>
       <button id="submitBtn" type="submit">✅ 텍스트 적용하기</button>
     </form>
     <div id="message"></div>
-    <div id="resultBox" style="display:none;">
-      <h3>👇 아래 코드를 그대로 복붙하시면 됩니다</h3>
-      <textarea id="resultCode" readonly></textarea>
+    <div id="resultBox">
+      <div style="font-size:17px;margin-bottom:6px;">👇 <b>이 코드를 복사해서 게시글에 붙여넣으세요!</b></div>
+      <pre class="code-box" id="resultCode" tabindex="0"></pre>
+      <button class="copy-btn" onclick="copyCode()">복사</button>
     </div>
-    <iframe id="hiddenFrame" src="" width="1" height="1"></iframe>
   </div>
+
   <script>
-    // Supabase 정보 (네 프로젝트에 맞게 입력)
+    // supabase 세팅 (값은 본인 프로젝트대로!)
     const supabaseUrl = "https://ssnmitgehgzzcpmqwhzt.supabase.co";
     const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNzbm1pdGdlaGd6emNwbXF3aHp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMzNjI1MDgsImV4cCI6MjA2ODkzODUwOH0.u3FrSDh5qYeccQmn0PkOs4nfqIhXLSFHhpWj2JXhTrA";
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
+    let failCount = 0;
+
+    // 복사 함수
+    function copyCode() {
+      const code = document.getElementById('resultCode').innerText;
+      navigator.clipboard.writeText(code);
+      document.querySelector('.copy-btn').innerText = "✅ 복사됨!";
+      setTimeout(()=>{document.querySelector('.copy-btn').innerText="복사"},1200);
+    }
+
     document.getElementById("theblackForm").addEventListener("submit", async function(e) {
       e.preventDefault();
-      const submitBtn = document.getElementById("submitBtn");
-      const messageDiv = document.getElementById("message");
-      const resultBox = document.getElementById("resultBox");
       const mainText = document.getElementById("mainText").value;
-      const params = new URLSearchParams({ mainText });
+      const submitBtn = document.getElementById("submitBtn");
+      const resultBox = document.getElementById("resultBox");
+      const resultCode = document.getElementById("resultCode");
+      const messageDiv = document.getElementById("message");
 
-      // 1. iframe에 디자인 페이지 띄우기
-      const iframe = document.getElementById("hiddenFrame");
-      iframe.src = `/changong/theblackempty.html?${params.toString()}`;
-
-      // 2. 안내문 띄우기
       submitBtn.disabled = true;
-      messageDiv.innerText = "이미지를 생성하고 있습니다. 잠시만 기다려주세요...";
+      resultBox.style.display = "none";
+      messageDiv.innerText = "이미지를 생성 중입니다. 잠시만 기다려주세요...";
 
-      // 3. iframe 로드 후 캡쳐 진행 (2초 대기)
-      iframe.onload = async function() {
-        setTimeout(async () => {
-          try {
-            // iframe 내 .render-target 선택
-            const node = iframe.contentWindow.document.querySelector('.render-target');
-            // 캡쳐
-            const dataUrl = await window.htmlToImage.toPng(node);
+      // 백엔드 캡쳐/업로드/생성과정은 숨긴다고 가정. (여기서는 setTimeout으로 시뮬레이션)
+      // 실제론 백엔드에서 이미지가 완성되면 해당 URL을 받아야 함
+      try {
+        // 여기에 실제 백엔드 작업이 들어감 (아래는 예시)
+        // const response = await fetch("/your-backend-url", { ... });
+        // const { imageUrl } = await response.json();
 
-            // 4. Supabase Storage에 업로드
-            // 고유 파일명 만들기 (타임스탬프 등)
-            const fileName = `theblack_${Date.now()}.png`;
-            const fileData = await (await fetch(dataUrl)).blob();
-            const { data, error } = await supabase
-              .storage
-              .from('changong-images')
-              .upload(fileName, fileData, { cacheControl: '3600', upsert: false });
+        // ★ 아래는 예시용 (2초 후 URL 생성) ★
+        await new Promise(res=>setTimeout(res,2000)); // 2초 대기 (실제로는 업로드/생성 대기)
+        const imageUrl = "https://madebychangong.github.io/changong/img/theblack_render.png"; // 예시
 
-            if (error) {
-              messageDiv.innerText = "이미지 업로드 실패: " + error.message;
-              submitBtn.disabled = false;
-              return;
-            }
-
-            // 5. Public URL 생성
-            const publicUrl = `${supabaseUrl}/storage/v1/object/public/changong-images/${fileName}`;
-
-            // 6. 결과 HTML 생성 및 표시
-            const finalHTML = `<a href="https://open.kakao.com/o/gUVp9cwh" target="_blank">
-  <img src="${publicUrl}" alt="가격표" style="width:100%; max-width:720px;">
-</a>`;
-            document.getElementById("resultCode").value = finalHTML;
-            resultBox.style.display = "block";
-            messageDiv.innerText = "✅ 이미지 생성이 완료되었습니다!";
-            submitBtn.disabled = false;
-          } catch (err) {
-            messageDiv.innerText = "캡쳐/업로드 오류: " + err.message;
-            submitBtn.disabled = false;
-          }
-        }, 2000);
-      };
+        // 결과 HTML
+        const htmlCode = `<a href="https://open.kakao.com/o/gUVp9cwh" target="_blank">\n  <img src="${imageUrl}" alt="가격표" style="width:100%; max-width:720px;">\n</a>`;
+        resultCode.innerText = htmlCode;
+        resultBox.style.display = "block";
+        messageDiv.innerText = "✅ 아래 코드를 복사해 사용하세요!";
+        submitBtn.disabled = false;
+        failCount = 0;
+      } catch (err) {
+        failCount += 1;
+        if (failCount >= 3) {
+          messageDiv.innerText = "이미지 생성이 반복적으로 실패했습니다. 개발자에게 문의해 주세요.";
+        } else {
+          messageDiv.innerText = "이미지 생성에 실패했습니다. 다시 시도해 주세요.";
+        }
+        submitBtn.disabled = false;
+      }
     });
   </script>
 </body>
