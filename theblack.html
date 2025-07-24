@@ -2,177 +2,187 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>실시간 가격표 입력</title>
+  <title>theblack 텍스트 입력</title>
   <script src="https://unpkg.com/html-to-image@1.11.11/dist/html-to-image.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <style>
     body {
-      background: #181820;
+      font-family: 'Arial', sans-serif;
+      background-color: #121212;
       color: #fff;
-      font-family: 'Pretendard', 'Arial', sans-serif;
-      padding: 40px 0;
+      padding: 40px 20px;
     }
     .container {
-      max-width: 600px;
+      max-width: 800px;
       margin: 0 auto;
-      background: #20202a;
-      padding: 36px 28px 30px 28px;
-      border-radius: 14px;
-      box-shadow: 0 2px 18px rgba(0,0,0,0.19);
-    }
-    h2 {
-      margin-bottom: 20px;
-      font-size: 26px;
-      letter-spacing: -1px;
+      background: #1e1e1e;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(255,255,255,0.1);
     }
     textarea {
       width: 100%;
-      height: 160px;
+      height: 240px;
+      padding: 16px;
       font-size: 18px;
-      background: #232338;
+      background: #2a2a2a;
       color: #fff;
       border: none;
-      border-radius: 7px;
-      padding: 18px 12px;
-      margin-bottom: 12px;
+      border-radius: 6px;
       resize: vertical;
-      line-height: 1.7;
+      line-height: 1.8;
       box-sizing: border-box;
+      text-align: center;
+      margin-bottom: 10px;
     }
     button {
-      display: block;
-      width: 100%;
-      background: #00ffd5;
-      color: #111;
-      font-weight: 700;
+      margin-top: 20px;
+      background-color: #444;
+      color: #fff;
       border: none;
-      padding: 15px;
-      font-size: 18px;
-      border-radius: 7px;
-      cursor: pointer;
-      margin-bottom: 14px;
-      transition: background 0.18s;
-    }
-    button:disabled {
-      background: #93f4e2;
-      color: #333;
-      cursor: not-allowed;
-    }
-    #message {
-      margin: 12px 0 0 0;
-      text-align: center;
+      padding: 12px 20px;
       font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:disabled { background-color: #888; cursor: not-allowed; }
+    #message {
+      margin-top: 20px;
       color: #00ffd5;
-      min-height: 28px;
+      font-size: 16px;
+      text-align: center;
     }
     #resultBox {
-      margin-top: 28px;
       display: none;
-    }
-    .code-box {
-      background: #222;
-      color: #0f0;
+      margin-top: 40px;
+      background: #232323;
+      padding: 20px;
+      border-radius: 10px;
       border: 2px solid #00ffd5;
-      border-radius: 9px;
-      padding: 18px 14px;
-      margin: 0 0 12px 0;
-      font-size: 15px;
-      word-break: break-all;
-      min-height: 70px;
-      position: relative;
-      font-family: 'Menlo', 'Consolas', monospace;
-      outline: none;
+      box-shadow: 0 2px 18px #00ffd540;
     }
-    .copy-btn {
-      position: absolute;
-      top: 10px;
-      right: 12px;
+    #resultBox h3 {
+      color: #ffd700;
+      font-size: 18px;
+      margin: 0 0 8px 0;
+      text-align: center;
+    }
+    #resultCode {
+      width: 100%;
+      height: 70px;
+      font-size: 16px;
+      padding: 14px;
+      background: #121212;
+      color: #00ffd5;
+      border: 1px dashed #00ffd5;
+      border-radius: 8px;
+      resize: none;
+      display: block;
+      margin-top: 10px;
+      margin-bottom: 5px;
+      text-align: center;
+    }
+    #copyBtn {
+      display: block;
+      margin: 0 auto 4px auto;
+      padding: 6px 18px;
       background: #00ffd5;
-      color: #111;
-      font-weight: bold;
+      color: #232323;
       border: none;
-      border-radius: 4px;
-      padding: 5px 10px;
-      font-size: 13px;
+      border-radius: 7px;
+      font-size: 15px;
+      font-weight: bold;
       cursor: pointer;
-      transition: background 0.16s;
+      transition: background 0.2s;
     }
-    .copy-btn:active {
-      background: #16c7a5;
-    }
+    #copyBtn:active { background: #00c9aa; }
+    iframe { display: none; }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>📝 실시간 가격표 텍스트 입력</h2>
-    <form id="theblackForm" autocomplete="off">
-      <textarea id="mainText" placeholder="여기에 텍스트를 입력하세요"></textarea>
+    <form id="theblackForm">
+      <textarea id="mainText" name="mainText" placeholder="여기에 텍스트를 입력하세요"></textarea>
       <button id="submitBtn" type="submit">✅ 텍스트 적용하기</button>
     </form>
     <div id="message"></div>
     <div id="resultBox">
-      <div style="font-size:17px;margin-bottom:6px;">👇 <b>이 코드를 복사해서 게시글에 붙여넣으세요!</b></div>
-      <pre class="code-box" id="resultCode" tabindex="0"></pre>
-      <button class="copy-btn" onclick="copyCode()">복사</button>
+      <h3>👇 이 코드만 복사해서 게시판에 붙여넣으세요</h3>
+      <textarea id="resultCode" readonly></textarea>
+      <button id="copyBtn">복사하기</button>
     </div>
+    <iframe id="hiddenFrame" src="" width="1" height="1"></iframe>
   </div>
-
   <script>
-    // supabase 세팅 (값은 본인 프로젝트대로!)
+    // Supabase 정보
     const supabaseUrl = "https://ssnmitgehgzzcpmqwhzt.supabase.co";
     const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNzbm1pdGdlaGd6emNwbXF3aHp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMzNjI1MDgsImV4cCI6MjA2ODkzODUwOH0.u3FrSDh5qYeccQmn0PkOs4nfqIhXLSFHhpWj2JXhTrA";
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-    let failCount = 0;
-
-    // 복사 함수
-    function copyCode() {
-      const code = document.getElementById('resultCode').innerText;
-      navigator.clipboard.writeText(code);
-      document.querySelector('.copy-btn').innerText = "✅ 복사됨!";
-      setTimeout(()=>{document.querySelector('.copy-btn').innerText="복사"},1200);
-    }
-
     document.getElementById("theblackForm").addEventListener("submit", async function(e) {
       e.preventDefault();
-      const mainText = document.getElementById("mainText").value;
       const submitBtn = document.getElementById("submitBtn");
-      const resultBox = document.getElementById("resultBox");
-      const resultCode = document.getElementById("resultCode");
       const messageDiv = document.getElementById("message");
-
-      submitBtn.disabled = true;
+      const resultBox = document.getElementById("resultBox");
+      const mainText = document.getElementById("mainText").value.trim();
+      const params = new URLSearchParams({ mainText });
+      const iframe = document.getElementById("hiddenFrame");
       resultBox.style.display = "none";
-      messageDiv.innerText = "이미지를 생성 중입니다. 잠시만 기다려주세요...";
+      messageDiv.innerText = "";
+      if (!mainText) { messageDiv.innerText = "텍스트를 입력하세요."; return; }
+      submitBtn.disabled = true;
+      messageDiv.innerText = "이미지 생성 중입니다. 5~10초 정도만 기다려 주세요...";
 
-      // 백엔드 캡쳐/업로드/생성과정은 숨긴다고 가정. (여기서는 setTimeout으로 시뮬레이션)
-      // 실제론 백엔드에서 이미지가 완성되면 해당 URL을 받아야 함
-      try {
-        // 여기에 실제 백엔드 작업이 들어감 (아래는 예시)
-        // const response = await fetch("/your-backend-url", { ... });
-        // const { imageUrl } = await response.json();
+      // 1. iframe에 디자인 페이지 렌더 (입력값 반영)
+      iframe.src = `/theblackempty.html?${params.toString()}`;
 
-        // ★ 아래는 예시용 (2초 후 URL 생성) ★
-        await new Promise(res=>setTimeout(res,2000)); // 2초 대기 (실제로는 업로드/생성 대기)
-        const imageUrl = "https://madebychangong.github.io/changong/img/theblack_render.png"; // 예시
+      // 2. iframe 로딩 후 캡처
+      iframe.onload = async function() {
+        setTimeout(async () => {
+          try {
+            const node = iframe.contentWindow.document.querySelector('.render-target');
+            const dataUrl = await window.htmlToImage.toPng(node);
 
-        // 결과 HTML
-        const htmlCode = `<a href="https://open.kakao.com/o/gUVp9cwh" target="_blank">\n  <img src="${imageUrl}" alt="가격표" style="width:100%; max-width:720px;">\n</a>`;
-        resultCode.innerText = htmlCode;
-        resultBox.style.display = "block";
-        messageDiv.innerText = "✅ 아래 코드를 복사해 사용하세요!";
-        submitBtn.disabled = false;
-        failCount = 0;
-      } catch (err) {
-        failCount += 1;
-        if (failCount >= 3) {
-          messageDiv.innerText = "이미지 생성이 반복적으로 실패했습니다. 개발자에게 문의해 주세요.";
-        } else {
-          messageDiv.innerText = "이미지 생성에 실패했습니다. 다시 시도해 주세요.";
-        }
-        submitBtn.disabled = false;
-      }
+            // 3. Supabase Storage 업로드
+            const fileName = `theblack_${Date.now()}.png`;
+            const fileData = await (await fetch(dataUrl)).blob();
+            const { error } = await supabase
+              .storage
+              .from('changong-images')
+              .upload(fileName, fileData, { cacheControl: '3600', upsert: false });
+
+            if (error) {
+              messageDiv.innerText = "이미지 업로드 실패: " + error.message;
+              submitBtn.disabled = false;
+              return;
+            }
+
+            // 4. Public URL 생성
+            const publicUrl = `${supabaseUrl}/storage/v1/object/public/changong-images/${fileName}`;
+            // 5. 최종 결과 HTML
+            const finalHTML = `<a href="https://open.kakao.com/o/gUVp9cwh" target="_blank">
+  <img src="${publicUrl}" alt="가격표" style="width:100%; max-width:720px;">
+</a>`;
+
+            document.getElementById("resultCode").value = finalHTML;
+            resultBox.style.display = "block";
+            messageDiv.innerText = "✅ 이미지 생성이 완료되었습니다!";
+          } catch (err) {
+            messageDiv.innerText = "이미지 생성/업로드 오류: 다시 시도해 주세요. 지속실패시 개발자에게 문의!";
+          }
+          submitBtn.disabled = false;
+        }, 3000); // 3초 대기 후 실행 (로딩 보장)
+      };
     });
+
+    // 복사버튼
+    document.getElementById("copyBtn").onclick = function() {
+      const code = document.getElementById("resultCode");
+      code.select();
+      document.execCommand('copy');
+      alert("복사되었습니다!");
+    };
   </script>
 </body>
 </html>
