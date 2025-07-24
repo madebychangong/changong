@@ -2,75 +2,126 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>theblack 템플릿</title>
+  <title>THE BLACK 템플릿</title>
   <style>
     body {
       margin: 0;
       padding: 0;
-      background: #fff;
-      font-family: 'Pretendard', sans-serif;
+      background: #000;
+      font-family: 'Segoe UI', 'Pretendard', sans-serif;
+      color: #f2f2f2;
     }
 
     .render-target {
-      width: 800px;
+      max-width: 720px;
       margin: 40px auto;
-      border: 1px solid #ddd;
-      padding: 60px 40px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.08);
-      background: white;
+      background-color: #111;
+      padding: 30px 36px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.85);
       box-sizing: border-box;
+    }
+
+    .section-title {
       text-align: center;
+      font-size: 42px;
+      font-weight: 700;
+      margin: 0;
+      color: #ffd700;
     }
 
-    .render-target h1 {
-      font-size: 28px;
-      margin-bottom: 30px;
-    }
-
-    .render-target .price-box {
-      font-size: 36px;
-      font-weight: bold;
-      color: #222;
-      margin-bottom: 40px;
-    }
-
-    .render-target .description {
+    .subtitle {
+      text-align: center;
       font-size: 18px;
-      color: #444;
+      color: #aaa;
+      margin-top: 8px;
+    }
+
+    .info-box {
+      text-align: center;
+      font-size: 17px;
+      color: #ccc;
+      line-height: 1.6;
+      margin-top: 28px;
+      margin-bottom: 20px;
+    }
+
+    .info-box p {
+      margin: 6px 0;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background-color: #00ffd5;
+      color: #000;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-weight: bold;
+      text-decoration: none;
+      transition: background-color 0.3s;
+      font-size: 16px;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #333;
+      margin: 24px 0;
+    }
+
+    .price-title {
+      text-align: center;
+      font-size: 22px;
+      color: #00ffae;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .description {
+      font-size: 18px;
+      color: #eee;
       line-height: 1.7;
       white-space: pre-wrap;
       word-break: keep-all;
-      margin-top: 40px;
+      margin-top: 24px;
     }
   </style>
 </head>
 <body>
   <div class="render-target">
+    <!-- 헤더 -->
+    <div style="text-align: center; margin-bottom: 12px;">
+      <h1 class="section-title">
+        <a href="https://open.kakao.com/o/gUVp9cwh" target="_blank" style="color: inherit; text-decoration: none;">
+          ⚔ THE BLACK SHOP ⚔
+        </a>
+      </h1>
+      <p class="subtitle">디아블로4 시즌9 버스 · 대리 · 아이템 전문 거래소</p>
+    </div>
 
-    <!-- 안내 텍스트 및 링크 -->
-    <div style="text-align: center; font-size: 17px; color: #ccc; margin-bottom: 16px; line-height: 1.6;">
-      <div style="margin-bottom: 12px;">
-        <p style="margin: 4px 0;">📦 <strong>모든 아이템 · 장비 · 재료 판매</strong></p>
-        <p style="margin: 4px 0;">🛡️ <strong>버스 · 대리 · 세팅 전부 지원</strong></p>
-        <p style="margin: 4px 0;">🧙‍♂️ <strong>전문 세팅 기사 상시 대기</strong></p>
-        <p style="margin: 4px 0;">🔥 <strong>실시간 최저가</strong>로 모십니다</p>
-      </div>
+    <!-- 안내 텍스트 -->
+    <div class="info-box">
+      <p>🎒 <strong>모든 장비, 아이템, 재료 완비</strong></p>
+      <p>🛡 <strong>버스, 대리, 세팅 풀 지원</strong></p>
+      <p>🧙 <strong>경험 많은 전문 기사 상시 대기</strong></p>
+      <p>🔥 <strong>합리적인 실시간 최저가 보장</strong></p>
+    </div>
 
-      <a href="https://open.kakao.com/o/gUVp9cwh" target="_blank"
-         style="display: inline-block; background-color: #00ffd5; color: #000; padding: 8px 16px; border-radius: 20px; text-decoration: none; font-weight: bold; transition: background-color 0.3s;">
-        👉 오픈채팅 바로가기
+    <!-- CTA -->
+    <div style="text-align: center;">
+      <a class="cta-button" href="https://open.kakao.com/o/gUVp9cwh" target="_blank">
+        💬 오픈채팅 문의하기
       </a>
     </div>
 
-    <hr style="border: none; border-top: 1px solid #333; margin: 20px 0;">
+    <hr class="divider">
 
-    <div style="text-align: center;">
-      <h2 style="color: #00ffae; font-size: 24px; margin: 0;">💰 실시간 가격표</h2>
+    <!-- 가격표 타이틀 -->
+    <div>
+      <h2 class="price-title">💰 실시간 가격표</h2>
     </div>
 
-    <!-- 🔽 여기에 텍스트 반영됨 -->
-    <div id="mainText" class="description"></div>
-
+    <!-- 사용자 텍스트 -->
+    <div class="description" id="mainText"></div>
   </div>
 
   <script>
