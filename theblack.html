@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>theblack 텍스트 입력</title>
-  <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.min.js"></script>
+  <script src="https://unpkg.com/html-to-image"></script>
   <style>
     body {
       font-family: 'Arial', sans-serif;
@@ -19,11 +19,6 @@
       padding: 30px;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(255,255,255,0.1);
-    }
-
-    h2 {
-      margin-bottom: 20px;
-      font-size: 24px;
     }
 
     textarea {
@@ -52,22 +47,18 @@
       cursor: pointer;
     }
 
-    button:hover {
-      background-color: #666;
+    button:disabled {
+      background-color: #888;
+      cursor: not-allowed;
     }
 
     #resultBox {
+      display: none;
       margin-top: 40px;
       background: #1d1d1d;
       padding: 20px;
       border-radius: 10px;
       border: 1px solid #333;
-    }
-
-    #resultBox h3 {
-      margin-top: 0;
-      color: #00ffd5;
-      font-size: 20px;
     }
 
     #resultCode {
@@ -82,11 +73,11 @@
       resize: none;
     }
 
-    iframe {
-      display: none;
-      width: 0;
-      height: 0;
-      border: 0;
+    #message {
+      margin-top: 20px;
+      color: #00ffd5;
+      font-size: 16px;
+      text-align: center;
     }
   </style>
 </head>
@@ -94,55 +85,89 @@
   <div class="container">
     <h2>📝 실시간 가격표 텍스트 입력</h2>
     <form id="theblackForm">
-      <label for="mainText">시트에서 복사한 텍스트를 붙여넣으면 됩니다:</label>
       <textarea id="mainText" name="mainText" placeholder="여기에 적으면 실제 디자인처럼 중앙에 정렬돼서 보여요!"></textarea>
-      <button type="submit">✅ 텍스트 적용하기</button>
+      <button id="submitBtn" type="submit">✅ 텍스트 적용하기</button>
     </form>
 
-    <div id="resultBox" style="display:none">
+    <div id="message"></div>
+
+    <div id="resultBox">
       <h3>👇 아래 코드를 그대로 복붙하시면 됩니다</h3>
       <textarea id="resultCode" readonly></textarea>
     </div>
   </div>
 
-  <iframe id="hiddenFrame"></iframe>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
-  <script>
-    document.getElementById("theblackForm").addEventListener("submit", async function(e) {
+    const firebaseConfig = {
+      apiKey: "AIzaSyCi-kZy2DHYib0saB39_7fKEIQ-8r2grjI",
+      authDomain: "changong-id.firebaseapp.com",
+      projectId: "changong-id",
+      storageBucket: "changong-id.appspot.com",
+      messagingSenderId: "538131345883",
+      appId: "1:538131345883:web:84d40425ccb3fba6cff7fe"
+    };
+
+    const allowedUsers = {
+      theblack: ['theblack@d4.com'],
+      jerry: ['jerry@d4.com'],
+      aron: ['aron@d4.com'],
+      master: ['master@cg.com']
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        alert("로그인이 필요한 페이지입니다.");
+        window.location.href = "index.html";
+        return;
+      }
+
+      const pathname = window.location.pathname.toLowerCase();
+      let currentKey = null;
+      if (pathname.includes("jerry")) currentKey = "jerry";
+      else if (pathname.includes("theblack")) currentKey = "theblack";
+      else if (pathname.includes("aron")) currentKey = "aron";
+
+      const allowed = allowedUsers[currentKey] || [];
+
+      if (!allowed.includes(user.email)) {
+        alert("접근 권한이 없습니다.");
+        signOut(auth);
+        window.location.href = "index.html";
+        return;
+      }
+    });
+
+    document.getElementById("theblackForm").addEventListener("submit", function(e) {
       e.preventDefault();
-
+      const submitBtn = document.getElementById("submitBtn");
+      const messageDiv = document.getElementById("message");
+      const resultBox = document.getElementById("resultBox");
       const mainText = document.getElementById("mainText").value;
-      const frame = document.getElementById("hiddenFrame");
       const params = new URLSearchParams({ mainText });
 
-      frame.src = `https://jade-cactus-d3ec99.netlify.app/theblackempty.html?${params.toString()}`;
+      // 안내 메시지
+      submitBtn.disabled = true;
+      messageDiv.innerText = "이미지를 생성 중입니다. 최대 30초 정도 소요될 수 있습니다...";
 
-      frame.onload = async () => {
-        const renderTarget = frame.contentWindow.document.querySelector(".render-target");
+      // 약 25초 후 결과 출력
+      setTimeout(() => {
+        const imageURL = "https://madebychangong.github.io/changong/img/theblack_render.png"; // 이미지 자동 업로드 후 갱신 예정
+        const finalHTML = `<a href="https://open.kakao.com/o/gUVp9cwh" target="_blank">\n  <img src="${imageURL}" alt="가격표" style="width:100%; max-width:720px;">\n</a>`;
 
-        if (!renderTarget) {
-          alert("렌더링 대상 요소를 찾을 수 없습니다.");
-          return;
-        }
+        document.getElementById("resultCode").value = finalHTML;
+        resultBox.style.display = "block";
+        messageDiv.innerText = "✅ 이미지 생성이 완료되었습니다!";
+        submitBtn.disabled = false;
+      }, 25000); // 25초 후 실행
 
-        try {
-          const dataUrl = await htmlToImage.toPng(renderTarget);
-
-          // 업로드 URL은 추후 Supabase 연동으로 대체 가능
-          // 현재는 미리보기용 임시 코드
-          const dummyUploadURL = dataUrl; // 실제 사용 시 이미지 업로드 로직 필요
-
-          const htmlCode = `<a href="https://open.kakao.com/o/gUVp9cwh" target="_blank">
-  <img src="${dummyUploadURL}" alt="가격표" style="width:100%; max-width:720px;">
-</a>`;
-
-          document.getElementById("resultCode").value = htmlCode;
-          document.getElementById("resultBox").style.display = "block";
-        } catch (err) {
-          console.error("이미지 변환 실패:", err);
-          alert("이미지 생성 중 오류가 발생했습니다.");
-        }
-      };
+      // 캡처용 링크 열기 (사용자는 못 봄)
+      window.open(`https://madebychangong.github.io/changong/theblackempty.html?${params.toString()}`, "_blank");
     });
   </script>
 </body>
