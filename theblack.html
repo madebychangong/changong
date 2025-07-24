@@ -157,6 +157,7 @@
 
       // 약 25초 후 결과 출력
       setTimeout(() => {
+        // 디자인을 새로 생성한 이미지 URL (업로드 이후 URL을 반환받아 사용)
         const imageURL = "https://madebychangong.github.io/changong/img/theblack_render.png"; // 이미지 자동 업로드 후 갱신 예정
         const finalHTML = `<a href="https://open.kakao.com/o/gUVp9cwh" target="_blank">\n  <img src="${imageURL}" alt="가격표" style="width:100%; max-width:720px;">\n</a>`;
 
@@ -165,9 +166,6 @@
         messageDiv.innerText = "✅ 이미지 생성이 완료되었습니다!";
         submitBtn.disabled = false;
       }, 25000); // 25초 후 실행
-
-      // 캡처용 링크 열기 (사용자는 못 봄)
-      window.open(`https://madebychangong.github.io/changong/theblackempty.html?${params.toString()}`, "_blank");
     });
   </script>
 </body>
