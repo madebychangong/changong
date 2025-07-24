@@ -176,26 +176,29 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyCi-kZy2DHYib0saB39_7fKEIQ-8r2grjI",
-    authDomain: "changong-id.firebaseapp.com",
-    projectId: "changong-id",
-    storageBucket: "changong-id.appspot.com",
-    messagingSenderId: "538131345883",
-    appId: "1:538131345883:web:84d40425ccb3fba6cff7fe"
-  };
+  document.addEventListener('DOMContentLoaded', () => {
+    const firebaseConfig = {
+      apiKey: "AIzaSyCi-kZy2DHYib0saB39_7fKEIQ-8r2grjI",
+      authDomain: "changong-id.firebaseapp.com",
+      projectId: "changong-id",
+      storageBucket: "changong-id.appspot.com",
+      messagingSenderId: "538131345883",
+      appId: "1:538131345883:web:84d40425ccb3fba6cff7fe"
+    };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-  onAuthStateChanged(auth, (user) => {
-    if (!user) {
-      window.location.href = "index.html";
-    } else {
-      document.body.style.display = 'block';
-    }
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.body.style.display = 'block'; // 로그인된 사용자만 보여줌
+      } else {
+        window.location.href = "index.html"; // 로그인 안되어 있으면 로그인 페이지로
+      }
+    });
   });
 </script>
+
 
 </body>
 </html>
