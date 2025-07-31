@@ -7,7 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
   <!-- GIF 생성 라이브러리 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://unpkg.com/gif.js@0.2.0/dist/gif.js"></script>
+  <script src="./gif.js"></script>
   <style>
     body {
       background: #191025;
@@ -181,13 +181,20 @@
       try {
         stopAnimate(); // 애니메이션 정지
         
+        // GIF 라이브러리 로드 확인
+        if (typeof GIF === 'undefined') {
+          progressDiv.innerHTML = '❌ GIF 라이브러리가 로드되지 않았습니다.';
+          return;
+        }
+        
         const gif = new GIF({
           workers: 0, // Worker 사용 안 함 (CORS 문제 해결)
           quality: 15,
           width: 400,
           height: 350,
           transparent: false,
-          debug: false
+          debug: false,
+          workerScript: false // Worker 완전 비활성화
         });
         
         const container = document.getElementById('mainContainer');
