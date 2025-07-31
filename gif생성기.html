@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>제리 네온 테스트</title>
+  <!-- GIF 생성 라이브러리 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
+  <style>
+    @font-face {
+      font-family: 'NanumSquare';
+      src: url('./fonts/NanumSquareR.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'NanumSquare';
+      src: url('./fonts/NanumSquareB.woff') format('woff');
+      font-weight: bold;
+      font-style: normal;
+    }
+    
+    body {
+      background: #191025;
+      margin: 0;
+      padding: 60px 0;
+      font-family: 'NanumSquare','Apple SD Gothic Neo', Arial, sans-serif;
+    }
+    
+    .render-target {
+      max-width: 720px;
+      margin: 0 auto 40px auto;
+      background: linear-gradient(to bottom right, #1a1a1a, #2a002a);
+      border: 3px solid #ff66cc;
+      border-radius: 16px;
+      padding: 30px 24px;
+      color: #f8f0ff;
+      font-size: 18px;
+      line-height: 1.8;
+      text-align: center;
+      box-sizing: border-box;
+      transition: all 0.1s ease;
+    }
+    
+    /* 네온 번쩍임 프레임들 (은은하게) */
+    .neon-frame-1 {
+      border: 3px solid #ff66cc;
+      box-shadow: 
+        0 0 5px #ff66cc,
+        0 0 10px rgba(255, 102, 204, 0.5);
+    }
+    
+    .neon-frame-2 {
+      border: 3px solid #ff77cc;
+      box-shadow: 
+        0 0 8px #ff77cc,
+        0 0 15px rgba(255, 119, 204, 0.6),
+        inset 0 0 10px rgba(255, 119, 204, 0.1);
+    }
+    
+    .neon-frame-3 {
+      border: 3px solid #ff88dd;
+      box-shadow: 
+        0 0 12px #ff88dd,
+        0 0 20px rgba(255, 136, 221, 0.7),
+        inset 0 0 15px rgba(255, 136, 221, 0.15);
+    }
+    
+    .neon-frame-4 {
+      border: 3px solid #ff99dd;
+      box-shadow: 
+        0 0 15px #ff99dd,
+        0 0 25px rgba(255, 153, 221, 0.8),
+        inset 0 0 20px rgba(255, 153, 221, 0.2);
+    }
+    
+    .title {
+      font-size: 40px;
+      color: #ff99dd;
+      margin-bottom: 5px;
+      letter-spacing: 1.2px;
+      font-weight: bold;
+    }
+    
+    .badges {
+      margin-bottom: 20px;
+    }
+    
+    .badges span {
+      background: #f7b7e6;
+      color: #50244f;
+      font-weight: bold;
+      border-radius: 13px;
+      padding: 3px 18px;
+      margin: 0 3px 5px 0;
+      font-size: 19px;
+      display: inline-block;
+    }
+    
+    .badges .main {
+      background: #ff66cc;
+      color: #000;
+      font-weight: bold;
+    }
+    
+    .test-controls {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(0,0,0,0.8);
+      padding: 20px;
+      border-radius: 10px;
+      color: white;
+    }
+    
+    .test-button {
+      background: #ff66cc;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+      margin: 5px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-controls">
+    <h3>네온 테스트</h3>
+    <button class="test-button" onclick="setFrame(1)">프레임 1</button>
+    <button class="test-button" onclick="setFrame(2)">프레임 2</button>
+    <button class="test-button" onclick="setFrame(3)">프레임 3</button>
+    <button class="test-button" onclick="setFrame(4)">프레임 4</button>
+    <button class="test-button" onclick="autoAnimate()">자동 반복</button>
+    <button class="test-button" onclick="stopAnimate()">정지</button>
+    <hr style="border-color: #666;">
+    <button class="test-button" onclick="createGIF()" style="background: #00ff88; font-size: 16px;">🎬 GIF 만들기</button>
+    <div id="progress" style="margin-top: 10px; color: #aaa; font-size: 12px;"></div>
+  </div>
+
+  <div class="render-target neon-frame-1" id="mainContainer">
+    <div class="title">💜 JERRY's D4 SHOP 💜 S9 💜</div>
+    <div class="badges">
+      <span class="main">✔ 세팅 전문 여기사</span>
+      <span>배틀넷</span>
+      <span>스팀</span>
+      <span>콘솔</span>
+    </div>
+    
+    <div style="color: #ffecf7; font-size: 20px; font-weight: bold; margin: 20px 0;">
+      빌드를 따라해도 나는 왜 안 되지 하시는 분 ✔<br>
+      시간이 없어서 세팅을 못 하시는 분 ✔<br>
+      스트레스 받으면서 게임하기 싫으신 분 ✔
+    </div>
+    
+    <div style="background: linear-gradient(90deg, #ff66cc 0%, #cc99ff 100%); color: #fff; font-size: 21px; font-weight: 700; border-radius: 17px; padding: 11px 32px; margin: 20px auto; display: inline-block;">
+      💬 1:1 상담 문의는 Click! 💬
+    </div>
+  </div>
+
+  <script>
+    let animationInterval = null;
+    
+    function setFrame(frameNumber) {
+      const container = document.getElementById('mainContainer');
+      container.className = 'render-target neon-frame-' + frameNumber;
+    }
+    
+    function autoAnimate() {
+      let currentFrame = 1;
+      stopAnimate(); // 기존 애니메이션 정지
+      
+      animationInterval = setInterval(() => {
+        setFrame(currentFrame);
+        currentFrame = currentFrame >= 4 ? 1 : currentFrame + 1;
+      }, 400); // 400ms마다 프레임 변경
+    }
+    
+    function stopAnimate() {
+      if (animationInterval) {
+        clearInterval(animationInterval);
+        animationInterval = null;
+      }
+    }
+    
+    // GIF 생성 함수 (수정버전)
+    async function createGIF() {
+      const progressDiv = document.getElementById('progress');
+      progressDiv.innerHTML = '🎬 GIF 생성 시작...';
+      
+      try {
+        stopAnimate(); // 애니메이션 정지
+        
+        const gif = new GIF({
+          workers: 0, // Worker 사용 안 함 (CORS 문제 해결)
+          quality: 15,
+          width: 400,
+          height: 350,
+          transparent: false,
+          debug: false
+        });
+        
+        const container = document.getElementById('mainContainer');
+        
+        // 4개 프레임 캡처
+        for (let i = 1; i <= 4; i++) {
+          progressDiv.innerHTML = `📸 프레임 ${i}/4 캡처...`;
+          
+          // 프레임 변경
+          setFrame(i);
+          
+          // 더 긴 대기 시간
+          await new Promise(resolve => setTimeout(resolve, 300));
+          
+          // 캡처 (간단한 설정)
+          const canvas = await html2canvas(container, {
+            scale: 0.5, // 크기 줄임
+            logging: true,
+            allowTaint: true,
+            backgroundColor: '#191025'
+          });
+          
+          progressDiv.innerHTML = `➕ 프레임 ${i} 추가...`;
+          
+          // GIF에 프레임 추가
+          gif.addFrame(canvas, { delay: 600 });
+          
+          await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        
+        progressDiv.innerHTML = '🔄 GIF 렌더링...';
+        
+        gif.on('finished', function(blob) {
+          progressDiv.innerHTML = '✅ 완료!';
+          
+          // 다운로드
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'jerry-neon.gif';
+          a.click();
+          URL.revokeObjectURL(url);
+          
+          setTimeout(() => progressDiv.innerHTML = '', 3000);
+        });
+        
+        gif.on('progress', function(p) {
+          progressDiv.innerHTML = `🔄 렌더링... ${Math.round(p * 100)}%`;
+        });
+        
+        gif.render();
+        
+      } catch (error) {
+        progressDiv.innerHTML = `❌ 오류: ${error.message}`;
+        console.error('GIF 생성 오류:', error);
+      }
+    }
+    
+    // 페이지 로드시 자동 시작
+    window.addEventListener('load', function() {
+      setTimeout(autoAnimate, 1000);
+    });
+  </script>
+</body>
+</html>
